@@ -1,95 +1,47 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { SignOutButton } from "@/components/sign-out-button";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main className="home">
+      <nav className="nav">
+        <Link className="brand" href="/">Booking System</Link>
+        {session ? (
+          <SignOutButton />
+        ) : (
+          <div className="nav-links">
+            <Link className="button secondary" href="/login">Sign in</Link>
+            <Link className="button" href="/register">Create account</Link>
+          </div>
+        )}
+      </nav>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      <section className="hero">
+        <p className="eyebrow">Next.js 14 · PostgreSQL · Prisma</p>
+        <h1>Book what you need,<br />when you need it.</h1>
+        <p className="hero-copy">
+          A booking foundation with users, inventory, reservations, and secure credentials authentication.
+        </p>
+
+        {session ? (
+          <div className="account-card">
+            <span className="status-dot" aria-hidden="true" />
+            <div>
+              <strong>Signed in as {session.user.name || session.user.email}</strong>
+              <p>{session.user.email}</p>
+            </div>
+          </div>
+        ) : (
+          <div className="hero-actions">
+            <Link className="button" href="/register">Get started</Link>
+            <Link className="text-link" href="/login">I already have an account →</Link>
+          </div>
+        )}
+      </section>
+    </main>
   );
 }
