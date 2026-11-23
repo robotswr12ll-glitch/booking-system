@@ -1,46 +1,60 @@
-# Booking System
+# CourtSide
 
-A Next.js 14 App Router application with TypeScript, PostgreSQL, Prisma, and Auth.js credentials authentication.
+Book your game. Own your time.
 
-## Setup
+A premium sports facility booking app built with Next.js 14, TypeScript, PostgreSQL, Prisma, and Auth.js credentials authentication.
 
-1. Install dependencies:
+## Local setup
 
-   ```bash
-   npm install
-   ```
-
-2. Create a PostgreSQL database, then copy `.env.example` to `.env` and set `DATABASE_URL`, `NEXTAUTH_URL`, and a strong random `NEXTAUTH_SECRET`.
-
-3. Apply the initial migration and generate Prisma Client:
+1. Install dependencies and create a PostgreSQL database.
+2. Copy `.env.example` to `.env` and configure `DATABASE_URL`, `NEXTAUTH_URL`, and a strong random `NEXTAUTH_SECRET`.
+3. Apply migrations and seed the facilities and admin account:
 
    ```bash
-   npx prisma migrate dev
-   npx prisma generate
+   npm run db:migrate
+   npm run db:seed
    ```
 
-4. Start the development server:
+4. Start the application:
 
    ```bash
    npm run dev
    ```
 
-   Open [http://localhost:3000](http://localhost:3000). Create an account at `/register`, then sign in at `/login`.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Database
+## Seeded admin
 
-`prisma/schema.prisma` defines:
+- Email: `admin@courtside.com`
+- Password: `admin123`
 
-- `User`: account details and a bcrypt password hash.
-- `Item`: name, description, and total available quantity.
-- `Booking`: user/item relations, start and end dates, and `PENDING`, `CONFIRMED`, or `CANCELLED` status.
+Change this password before using the account in a public production environment.
 
-The initial PostgreSQL migration is in `prisma/migrations/20261122000000_init/migration.sql`.
+## Customer flow
+
+Register or sign in, open `/book`, choose a sport, date, duration, and start time. CourtSide automatically assigns an available facility. Complete the demo payment to confirm the reservation, then manage it from `/my-bookings`.
+
+## Administration
+
+`/admin` is restricted to users with the `ADMIN` role. Administrators can filter every reservation by date, sport, and status, cancel upcoming bookings, and mark bookings as completed.
+
+## Railway deployment
+
+Set `DATABASE_URL`, `NEXTAUTH_URL`, and `NEXTAUTH_SECRET` on the application service. Run migrations and the seed against the Railway database before using the new version:
+
+```bash
+npm run db:migrate
+npm run db:seed
+```
+
+The build command runs `prisma generate && next build`, so Prisma Client is generated during deployment.
 
 ## Commands
 
 ```bash
-npm run dev    # Development server
-npm run build  # Production build
-npm run lint   # ESLint
+npm run dev         # Development server
+npm run build       # Generate Prisma Client and create a production build
+npm run lint        # ESLint
+npm run db:migrate  # Apply committed Prisma migrations
+npm run db:seed     # Seed facilities and the admin account
 ```

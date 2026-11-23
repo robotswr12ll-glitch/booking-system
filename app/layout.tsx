@@ -14,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Booking System",
-  description: "Manage item bookings with secure user accounts.",
+  title: "CourtSide — Book your game. Own your time.",
+  description: "Premium sports facilities, effortlessly reserved.",
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${geistSans.className} ${geistSans.variable} ${geistMono.variable}`}>
         {children}
       </body>
     </html>

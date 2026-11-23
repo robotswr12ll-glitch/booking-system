@@ -11,6 +11,7 @@ enum BookingStatus {
   PENDING
   CONFIRMED
   CANCELLED
+  COMPLETED
 }
 
 model User {
@@ -18,6 +19,7 @@ model User {
   name         String?
   email        String    @unique
   passwordHash String
+  role         String    @default("USER")
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   bookings     Booking[]
@@ -25,31 +27,34 @@ model User {
   @@map("users")
 }
 
-model Item {
-  id            String    @id @default(cuid())
-  name          String
-  description   String
-  totalQuantity Int
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  bookings      Booking[]
+model Facility {
+  id           String    @id @default(cuid())
+  name         String
+  sport        String
+  pricePerHour Int
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  bookings     Booking[]
 
-  @@map("items")
+  @@index([sport])
+  @@map("facilities")
 }
 
 model Booking {
-  id        String        @id @default(cuid())
-  userId    String
-  itemId    String
-  startDate DateTime
-  endDate   DateTime
-  status    BookingStatus @default(PENDING)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  item      Item          @relation(fields: [itemId], references: [id], onDelete: Restrict)
+  id         String        @id @default(cuid())
+  userId     String
+  facilityId String
+  date       DateTime
+  startTime  Int
+  duration   Int
+  status     BookingStatus @default(PENDING)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  facility   Facility      @relation(fields: [facilityId], references: [id], onDelete: Restrict)
 
-  @@index([userId])
-  @@index([itemId, startDate, endDate])
+  @@index([userId, date])
+  @@index([facilityId, date, status])
+  @@index([status, date])
   @@map("bookings")
 }
